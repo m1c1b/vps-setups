@@ -1,0 +1,29 @@
+services:
+  nginx:
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
+    env_file:
+      - ./nginx-certbot.env
+    ports:
+      - "80:80"
+      - "8443:8443"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - ./nginx_secrets:/etc/letsencrypt
+      - ./user_conf.d:/etc/nginx/user_conf.d
+      - ./static:/etc/nginx/static:ro
+
+  3xui:
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    container_name: 3xui_app
+    hostname: host-placeholder
+    volumes:
+      - ./3x-ui-db/:/etc/x-ui/
+      - ./nginx_secrets:/etc/letsencrypt:ro
+    environment:
+      XRAY_VMESS_AEAD_FORCED: "false"
+      XUI_ENABLE_FAIL2BAN: "true"
+    tty: true
+    network_mode: host
+    restart: unless-stopped

@@ -1,0 +1,3 @@
+.idea
+3x-nginx-certbot/nginx_secrets/*
+/3x-nginx-certbot/nginx-certbot.env
